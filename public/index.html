@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraChat · 轻盈对话</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ═══ 登录页 ═══ -->
+  <div id="login-screen" class="screen">
+    <div class="login-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 40 40" width="44" height="44">
+            <defs>
+              <linearGradient id="logograd" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6366F1"/>
+                <stop offset="100%" stop-color="#06B6D4"/>
+              </linearGradient>
+            </defs>
+            <rect x="3" y="8" width="34" height="26" rx="7" fill="none" stroke="url(#logograd)" stroke-width="2.5"/>
+            <line x1="10" y1="18" x2="20" y2="18" stroke="url(#logograd)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="10" y1="24" x2="17" y2="24" stroke="url(#logograd)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="29" cy="21" r="5" fill="url(#logograd)" opacity=".2"/>
+            <line x1="27.5" y1="21" x2="30.5" y2="21" stroke="url(#logograd)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="29" y1="19.5" x2="29" y2="22.5" stroke="url(#logograd)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="brand-name">AuraChat</h1>
+        <p class="brand-sub">轻盈 · 清澈 · 如约而至</p>
+      </div>
+
+      <div class="login-form">
+        <div class="field">
+          <label class="field-label" for="username-input">你的昵称</label>
+          <div class="field-input-wrap">
+            <svg class="field-icon" viewBox="0 0 20 20" width="17" height="17">
+              <circle cx="10" cy="6.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3 18c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="username-input" class="field-input"
+                   placeholder="输入昵称..." maxlength="20" autofocus spellcheck="false">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">主题色</label>
+          <div class="swatches" id="swatches">
+            <button class="swatch active" data-color="#6366F1" data-h="#06B6D4" style="background:#6366F1" aria-label="靛蓝"></button>
+            <button class="swatch" data-color="#EC4899" data-h="#F97316" style="background:#EC4899" aria-label="樱花"></button>
+            <button class="swatch" data-color="#14B8A6" data-h="#84CC16" style="background:#14B8A6" aria-label="青碧"></button>
+            <button class="swatch" data-color="#F59E0B" data-h="#EF4444" style="background:#F59E0B" aria-label="琥珀"></button>
+            <button class="swatch" data-color="#8B5CF6" data-h="#EC4899" style="background:#8B5CF6" aria-label="紫罗兰"></button>
+            <button class="swatch" data-color="#3B82F6" data-h="#06B6D4" style="background:#3B82F6" aria-label="天蓝"></button>
+          </div>
+        </div>
+
+        <button id="login-btn" class="btn-primary">
+          <span>进入聊天</span>
+          <svg viewBox="0 0 20 20" width="16" height="16">
+            <path d="M4 10h12M11 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <p id="login-error" class="field-error"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 聊天页 ═══ -->
+  <div id="chat-screen" class="screen hidden">
+
+    <!-- Header -->
+    <header class="chat-header">
+      <div class="header-start">
+        <div class="header-logo">
+          <svg viewBox="0 0 40 40" width="26" height="26">
+            <rect x="3" y="8" width="34" height="26" rx="7" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <line x1="10" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="10" y1="24" x2="17" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="header-title">AuraChat</span>
+        <span class="header-pill" id="online-pill">
+          <span class="pill-dot"></span>
+          <span id="online-count">0</span>
+        </span>
+      </div>
+      <div class="header-end">
+        <div class="header-me" id="header-me">
+          <span class="me-name" id="me-name"></span>
+          <span class="me-avatar" id="me-avatar">?</span>
+        </div>
+        <button id="logout-btn" class="btn-icon" aria-label="退出">
+          <svg viewBox="0 0 20 20" width="18" height="18">
+            <path d="M7 17H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h3M14 14l4-4-4-4M18 10H8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="chat-body">
+
+      <!-- 消息区 -->
+      <main class="messages" id="messages">
+
+        <div class="welcome" id="welcome">
+          <div class="welcome-glow"></div>
+          <h2 class="welcome-title">AuraChat</h2>
+          <p class="welcome-sub">连接从这里开始，输入消息开始对话吧</p>
+          <div class="welcome-hints">
+            <kbd class="hint"><span class="kb">↵</span> 发送</kbd>
+            <kbd class="hint"><span class="kb">⇧↵</span> 换行</kbd>
+          </div>
+        </div>
+
+        <div id="msg-list" class="msg-list"></div>
+      </main>
+
+      <!-- 侧栏 -->
+      <aside class="side" id="side">
+        <div class="side-head">
+          <svg viewBox="0 0 20 20" width="16" height="16" class="side-icon">
+            <circle cx="7" cy="6" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M1 19c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="16" y1="5" x2="19" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="17.5" y1="3.5" x2="17.5" y2="6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>在线</span>
+          <span class="side-count" id="side-count">0</span>
+        </div>
+        <div class="side-body" id="side-body"></div>
+      </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="chat-footer">
+      <div id="typing" class="typing hidden">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span id="typing-name" class="typing-text"></span>
+      </div>
+      <div class="input-bar">
+        <button id="file-btn" class="btn-img" title="发送文件/图片">
+          <svg viewBox="0 0 22 22" width="18" height="18">
+            <path d="M13 2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="13 2 13 7 18 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="8" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="11" y1="10" x2="11" y2="16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <input type="file" id="file-picker" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar,.7z,.tar,.gz,.mp3,.wav,.flac,.aac,.mp4,.avi,.mkv,.mov,.js,.ts,.py,.java,.cpp,.c,.go,.rs,.rb,.php,.log,.md" class="hidden">
+        <input type="text" id="msg-input" class="msg-input"
+               placeholder="写点什么...  (Ctrl+V 粘贴)" maxlength="500" autocomplete="off">
+        <button id="send-btn" class="btn-send" disabled>
+          <svg viewBox="0 0 22 22" width="20" height="20">
+            <path d="M20 2L10 12M20 2l-5 18-4-8-8-4 17-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/static/script.js"></script>
+</body>
+</html>
